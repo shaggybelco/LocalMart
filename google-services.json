@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "546227077958",
+    "project_id": "localmart-cfc80",
+    "storage_bucket": "localmart-cfc80.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546227077958:android:ce01fb44b6e1df3ecb9b47",
+        "android_client_info": {
+          "package_name": "com.shaggy.localmart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZS4yPMUR82fHN3AfR9g1jYV-h3WBXdnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
