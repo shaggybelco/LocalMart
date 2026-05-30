@@ -4,112 +4,234 @@ import {
   TabTrigger,
   TabSlot,
   TabTriggerSlotProps,
-  TabListProps,
 } from 'expo-router/ui';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, useColorScheme, View, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Pressable, useWindowDimensions, View, StyleSheet } from 'react-native';
 
-import { ExternalLink } from './external-link';
 import { ThemedText } from './themed-text';
-import { ThemedView } from './themed-view';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import { useAppTheme } from '@/context/app-theme';
 
-import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+const BOTTOM_BAR_HEIGHT = 64;
+const TOP_BAR_HEIGHT = 56;
+
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
+
+const TABS: { name: string; href: string; icon: IoniconsName; iconActive: IoniconsName; label: string }[] = [
+  { name: 'home',     href: '/',         icon: 'home-outline',       iconActive: 'home',       label: 'Home'     },
+  { name: 'register', href: '/register', icon: 'storefront-outline', iconActive: 'storefront', label: 'Register' },
+  { name: 'saved',    href: '/saved',    icon: 'heart-outline',      iconActive: 'heart',      label: 'Saved'    },
+];
 
 export default function AppTabs() {
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
+  const tabTriggers = TABS.map(tab => (
+    <TabTrigger key={tab.name} name={tab.name} href={tab.href} asChild>
+      <TabItem
+        icon={tab.icon}
+        iconActive={tab.iconActive}
+        label={tab.label}
+        isMobile={isMobile}
+      />
+    </TabTrigger>
+  ));
+
+  if (isMobile) {
+    return (
+      <Tabs style={styles.container}>
+        <View style={styles.slotMobile}>
+          <TabSlot style={styles.slot} />
+        </View>
+        <TabList asChild>
+          <BottomBar>{tabTriggers}</BottomBar>
+        </TabList>
+      </Tabs>
+    );
+  }
+
   return (
-    <Tabs>
-      <TabSlot style={{ height: '100%' }} />
+    <Tabs style={styles.container}>
       <TabList asChild>
-        <CustomTabList>
-          <TabTrigger name="home" href="/" asChild>
-            <TabButton>Home</TabButton>
-          </TabTrigger>
-          <TabTrigger name="explore" href="/explore" asChild>
-            <TabButton>Explore</TabButton>
-          </TabTrigger>
-        </CustomTabList>
+        <TopBar>{tabTriggers}</TopBar>
       </TabList>
+      <TabSlot style={styles.slot} />
     </Tabs>
   );
 }
 
-export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+function TopBar({ children, ...props }: any) {
+  const theme = useTheme();
+  const { resolved, toggle } = useAppTheme();
   return (
-    <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
-      <ThemedView
-        type={isFocused ? 'backgroundSelected' : 'backgroundElement'}
-        style={styles.tabButtonView}>
-        <ThemedText type="small" themeColor={isFocused ? 'text' : 'textSecondary'}>
-          {children}
+    <View
+      {...props}
+      style={[
+        styles.topBarOuter,
+        { backgroundColor: theme.background, borderBottomColor: theme.border },
+      ]}>
+      <View style={styles.topBarInner}>
+        <ThemedText type="smallBold" style={[styles.brand, { color: theme.brand }]}>
+          LocalMart
         </ThemedText>
-      </ThemedView>
-    </Pressable>
-  );
-}
-
-export function CustomTabList(props: TabListProps) {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
-
-  return (
-    <View {...props} style={styles.tabListContainer}>
-      <ThemedView type="backgroundElement" style={styles.innerContainer}>
-        <ThemedText type="smallBold" style={styles.brandText}>
-          Expo Starter
-        </ThemedText>
-
-        {props.children}
-
-        <ExternalLink href="https://docs.expo.dev" asChild>
-          <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
-            <SymbolView
-              tintColor={colors.text}
-              name={{ ios: 'arrow.up.right.square', web: 'link' }}
-              size={12}
-            />
-          </Pressable>
-        </ExternalLink>
-      </ThemedView>
+        <View style={styles.topTabs}>{children}</View>
+        <Pressable
+          onPress={toggle}
+          style={[styles.themeToggle, { backgroundColor: theme.backgroundElement }]}>
+          <Ionicons
+            name={resolved === 'dark' ? 'sunny-outline' : 'moon-outline'}
+            size={17}
+            color={theme.textSecondary}
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
 
+function BottomBar({ children, ...props }: any) {
+  const theme = useTheme();
+  return (
+    <View
+      {...props}
+      style={[
+        styles.bottomBar,
+        { backgroundColor: theme.background, borderTopColor: theme.border },
+      ]}>
+      {children}
+    </View>
+  );
+}
+
+export function TabItem({
+  icon,
+  iconActive,
+  label,
+  isMobile,
+  isFocused,
+  ...props
+}: TabTriggerSlotProps & {
+  icon: IoniconsName;
+  iconActive: IoniconsName;
+  label: string;
+  isMobile: boolean;
+}) {
+  const theme = useTheme();
+  const iconName = isFocused ? iconActive : icon;
+  const iconColor = isFocused ? theme.brand : theme.textSecondary;
+
+  if (isMobile) {
+    return (
+      <Pressable
+        {...props}
+        style={({ pressed }) => [styles.bottomTab, pressed && styles.pressed]}>
+        {isFocused && (
+          <View style={[styles.activeDot, { backgroundColor: theme.brand }]} />
+        )}
+        <Ionicons name={iconName} size={23} color={iconColor} />
+        <ThemedText
+          style={[
+            styles.tabLabel,
+            { color: iconColor },
+            isFocused && styles.tabLabelActive,
+          ]}>
+          {label}
+        </ThemedText>
+      </Pressable>
+    );
+  }
+
+  return (
+    <Pressable
+      {...props}
+      style={({ pressed }) => [styles.topTab, pressed && styles.pressed]}>
+      <View
+        style={[
+          styles.topTabInner,
+          isFocused && { backgroundColor: theme.backgroundElement },
+        ]}>
+        <Ionicons name={iconName} size={15} color={iconColor} />
+        <ThemedText
+          type="small"
+          style={{
+            color: iconColor,
+            fontWeight: isFocused ? '700' : '500',
+            fontSize: 13,
+          }}>
+          {label}
+        </ThemedText>
+      </View>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
-  tabListContainer: {
-    position: 'absolute',
-    width: '100%',
-    padding: Spacing.three,
+  container: { flex: 1 },
+  slot: { flex: 1 },
+  slotMobile: { flex: 1, paddingBottom: BOTTOM_BAR_HEIGHT },
+
+  topBarOuter: {
+    height: TOP_BAR_HEIGHT,
+    borderBottomWidth: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  innerContainer: {
-    paddingVertical: Spacing.two,
-    paddingHorizontal: Spacing.five,
-    borderRadius: Spacing.five,
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexGrow: 1,
-    gap: Spacing.two,
-    maxWidth: MaxContentWidth,
-  },
-  brandText: {
-    marginRight: 'auto',
-  },
-  pressed: {
-    opacity: 0.7,
-  },
-  tabButtonView: {
-    paddingVertical: Spacing.one,
     paddingHorizontal: Spacing.three,
-    borderRadius: Spacing.three,
   },
-  externalPressable: {
+  topBarInner: {
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     gap: Spacing.one,
-    marginLeft: Spacing.three,
+  },
+  brand: { marginRight: 'auto', fontSize: 15, letterSpacing: 0.3 },
+  topTabs: { flexDirection: 'row', gap: 2 },
+  topTab: {},
+  topTabInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.two,
+    borderRadius: 8,
+  },
+
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: BOTTOM_BAR_HEIGHT,
+    flexDirection: 'row',
+    borderTopWidth: 1,
+  },
+  bottomTab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
+    position: 'relative',
+    paddingTop: 4,
+  },
+  tabLabel: { fontSize: 10, letterSpacing: 0.2 },
+  tabLabelActive: { fontWeight: '700' },
+  activeDot: {
+    position: 'absolute',
+    top: 0,
+    width: 24,
+    height: 3,
+    borderRadius: 2,
+  },
+
+  pressed: { opacity: 0.65 },
+  themeToggle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: Spacing.one,
   },
 });

@@ -15,14 +15,14 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
     <Text
       style={[
         { color: theme[themeColor ?? 'text'] },
-        type === 'default' && styles.default,
-        type === 'title' && styles.title,
-        type === 'small' && styles.small,
-        type === 'smallBold' && styles.smallBold,
-        type === 'subtitle' && styles.subtitle,
-        type === 'link' && styles.link,
+        type === 'default'     && styles.default,
+        type === 'title'       && styles.title,
+        type === 'small'       && styles.small,
+        type === 'smallBold'   && styles.smallBold,
+        type === 'subtitle'    && styles.subtitle,
+        type === 'link'        && styles.link,
         type === 'linkPrimary' && styles.linkPrimary,
-        type === 'code' && styles.code,
+        type === 'code'        && styles.code,
         style,
       ]}
       {...rest}
@@ -31,43 +31,52 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
 }
 
 const styles = StyleSheet.create({
+  default: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontFamily: Fonts?.sans,
+    fontWeight: '400',
+  },
   small: {
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 500,
+    fontFamily: Fonts?.medium,
+    fontWeight: '500',
   },
   smallBold: {
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 700,
-  },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
+    fontFamily: Fonts?.semiBold,
+    fontWeight: '600',
   },
   subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
+    fontSize: 28,
+    lineHeight: 36,
+    fontFamily: Fonts?.bold,
+    fontWeight: '700',
+  },
+  title: {
+    fontSize: 40,
+    lineHeight: 48,
+    fontFamily: Fonts?.bold,
+    fontWeight: '700',
   },
   link: {
-    lineHeight: 30,
     fontSize: 14,
+    lineHeight: 22,
+    fontFamily: Fonts?.medium,
+    fontWeight: '500',
   },
   linkPrimary: {
-    lineHeight: 30,
     fontSize: 14,
-    color: '#3c87f7',
+    lineHeight: 22,
+    fontFamily: Fonts?.medium,
+    fontWeight: '500',
+    color: '#059669',
   },
   code: {
-    fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
+    fontFamily: Platform.select({ web: 'var(--font-mono)', default: Fonts?.mono }),
+    fontWeight: '500',
     fontSize: 12,
   },
 });

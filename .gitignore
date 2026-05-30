@@ -29,9 +29,13 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+.superpowers
+.claude
 
 # local env files
 .env*.local
+env
+plans/
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +45,4 @@ example
 # generated native folders
 /ios
 /android
+/docs

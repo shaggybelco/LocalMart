@@ -1,26 +1,26 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import '@/global.css';
-
 import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    text:                '#0A2218',
+    background:          '#FFFFFF',
+    backgroundElement:   '#F0FDF8',
+    backgroundSelected:  '#D1FAE5',
+    textSecondary:       '#6B7280',
+    brand:               '#059669',
+    surface:             '#FFFFFF',
+    border:              '#E5E7EB',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text:                '#F0FDF8',
+    background:          '#030A06',
+    backgroundElement:   '#0B1F14',
+    backgroundSelected:  '#064E3B',
+    textSecondary:       '#9CA3AF',
+    brand:               '#34D399',
+    surface:             '#0B1F14',
+    border:              '#1F2D24',
   },
 } as const;
 
@@ -28,37 +28,43 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+    sans:     'Poppins_400Regular',
+    medium:   'Poppins_500Medium',
+    semiBold: 'Poppins_600SemiBold',
+    bold:     'Poppins_700Bold',
+    mono:     'ui-monospace',
+  },
+  android: {
+    sans:     'Poppins_400Regular',
+    medium:   'Poppins_500Medium',
+    semiBold: 'Poppins_600SemiBold',
+    bold:     'Poppins_700Bold',
+    mono:     'monospace',
   },
   default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+    sans:     'Poppins_400Regular',
+    medium:   'Poppins_500Medium',
+    semiBold: 'Poppins_600SemiBold',
+    bold:     'Poppins_700Bold',
+    mono:     'monospace',
   },
   web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
+    sans:     'var(--font-display)',
+    medium:   'var(--font-display)',
+    semiBold: 'var(--font-display)',
+    bold:     'var(--font-display)',
+    mono:     'var(--font-mono)',
   },
 });
 
 export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
+  half:  2,
+  one:   4,
+  two:   8,
   three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
+  four:  24,
+  five:  32,
+  six:   64,
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
