@@ -24,11 +24,19 @@ function AppShell() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="business/[id]"
-          options={{ headerShown: true, title: '', headerBackTitle: 'Back' }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="auth/login"
           options={{ presentation: 'modal', headerShown: true, title: 'Sign In' }}
+        />
+        <Stack.Screen
+          name="admin/index"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="settings/index"
+          options={{ headerShown: false }}
         />
       </Stack>
     </ThemeProvider>

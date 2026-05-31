@@ -9,11 +9,17 @@ export interface BusinessMapProps {
 
 const CATEGORY_COLORS: Record<string, string> = {
   spaza:        '#F97316',
+  grocery:      '#FB923C',
   hair_salon:   '#A855F7',
+  beauty_salon: '#EC4899',
   car_wash:     '#3B82F6',
+  mechanic:     '#64748B',
   food_vendor:  '#EF4444',
   phone_repair: '#EAB308',
   tailor:       '#10B981',
+  laundry:      '#06B6D4',
+  tutoring:     '#8B5CF6',
+  other:        '#6B7280',
 };
 
 export function BusinessMap({ businesses, userLocation }: BusinessMapProps) {

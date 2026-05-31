@@ -8,26 +8,30 @@ import {
   View,
 } from 'react-native';
 import * as Location from 'expo-location';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BusinessCard } from '@/components/BusinessCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
 import { RadiusSelector } from '@/components/RadiusSelector';
 import { BusinessMap } from '@/components/BusinessMap';
+import { GradientHeader } from '@/components/GradientHeader';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/use-theme';
 import { useResponsive } from '@/hooks/use-responsive';
 import { useAppTheme } from '@/context/app-theme';
 import { GradientView } from '@/components/GradientView';
+import { usePendingCount } from '@/hooks/use-pending-count';
+import { useAuth } from '@/hooks/use-auth';
 import { getNearbyBusinesses, Business } from '@/services/businesses';
 
 export default function HomeScreen() {
   const theme = useTheme();
   const { resolved, toggle } = useAppTheme();
-  const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const { isWide, numColumns } = useResponsive();
+  const pendingCount = usePendingCount();
   const [businesses, setBusinesses] = useState<(Business & { distance_meters?: number })[]>([]);
   const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState(false);
@@ -64,25 +68,35 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Gradient header */}
-      <GradientView style={[styles.headerOuter, { paddingTop: insets.top + Spacing.two }]}>
-        <View style={styles.headerInner}>
-          <View style={styles.headerLeft}>
-            <ThemedText type="subtitle" style={styles.headerTitle}>LocalMart</ThemedText>
-            <ThemedText type="small" style={styles.headerSub}>Discover local businesses near you</ThemedText>
-          </View>
-          {/* Only show toggle on mobile — desktop has it in the top navbar */}
-          {!isWide && (
+      <GradientHeader
+        title="LocalMart"
+        subtitle="Discover local businesses near you"
+        right={!isWide ? (
+          <View style={styles.headerActions}>
+            {user ? (
+              <Pressable onPress={() => router.push('/settings')} style={styles.themeBtn} hitSlop={8}>
+                <View style={styles.badgeWrap}>
+                  <Ionicons name="person-circle-outline" size={20} color="rgba(255,255,255,0.9)" />
+                  {pendingCount > 0 && (
+                    <View style={styles.badge}>
+                      <ThemedText style={styles.badgeText}>
+                        {pendingCount > 99 ? '99+' : pendingCount}
+                      </ThemedText>
+                    </View>
+                  )}
+                </View>
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => router.push('/auth/login')} style={styles.signInBtn} hitSlop={8}>
+                <ThemedText type="smallBold" style={styles.signInText}>Sign In</ThemedText>
+              </Pressable>
+            )}
             <Pressable onPress={toggle} style={styles.themeBtn} hitSlop={8}>
-              <Ionicons
-                name={resolved === 'dark' ? 'sunny-outline' : 'moon-outline'}
-                size={18}
-                color="rgba(255,255,255,0.9)"
-              />
+              <Ionicons name={resolved === 'dark' ? 'sunny-outline' : 'moon-outline'} size={18} color="rgba(255,255,255,0.9)" />
             </Pressable>
-          )}
-        </View>
-      </GradientView>
+          </View>
+        ) : undefined}
+      />
 
       {/* Centered controls */}
       <View style={styles.controls}>
@@ -175,20 +189,30 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerOuter: { width: '100%' },
-  headerInner: {
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-    paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.four,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+  headerActions: { flexDirection: 'row', gap: Spacing.one, marginTop: Spacing.one, alignItems: 'center' },
+  signInBtn: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 20,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
   },
-  headerLeft: { gap: Spacing.half },
-  headerTitle: { color: '#fff' },
-  headerSub: { color: 'rgba(255,255,255,0.8)' },
+  signInText: { color: '#fff', fontSize: 13 },
+  badgeWrap: { position: 'relative' },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    minWidth: 15,
+    height: 15,
+    borderRadius: 8,
+    backgroundColor: '#EF4444',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  badgeText: { fontSize: 9, fontWeight: '700', color: '#fff', lineHeight: 11 },
   themeBtn: {
     width: 38,
     height: 38,
@@ -196,7 +220,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: Spacing.one,
   },
   controls: { paddingVertical: Spacing.two },
   controlsInner: {

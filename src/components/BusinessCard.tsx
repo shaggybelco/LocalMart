@@ -7,11 +7,17 @@ import { Business } from '@/services/businesses';
 
 const CATEGORY_LABEL: Record<string, string> = {
   spaza:        'Spaza Shop',
+  grocery:      'Grocery Store',
   hair_salon:   'Hair Salon',
+  beauty_salon: 'Beauty Salon',
   car_wash:     'Car Wash',
+  mechanic:     'Mechanic',
   food_vendor:  'Food Vendor',
   phone_repair: 'Phone Repair',
   tailor:       'Tailor',
+  laundry:      'Laundry',
+  tutoring:     'Tutoring',
+  other:        'Other',
 };
 
 function formatDistance(m: number) {
@@ -81,12 +87,12 @@ export function BusinessCard({ business, style }: Props) {
           )}
           {business.open_time && open && (
             <ThemedText type="small" themeColor="textSecondary">
-              · closes {business.close_time}
+              {`· closes ${business.close_time}`}
             </ThemedText>
           )}
           {business.price_range && (
             <ThemedText type="small" themeColor="textSecondary">
-              · {business.price_range}
+              {`· ${{ R: 'Budget (under R100)', RR: 'Moderate (R100–R300)', RRR: 'Premium (R300+)' }[business.price_range] ?? business.price_range}`}
             </ThemedText>
           )}
           {business.rating > 0 && (

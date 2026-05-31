@@ -36,7 +36,7 @@ export default function LoginScreen() {
       } else {
         await signUp(email, password);
       }
-      router.back();
+      router.canGoBack() ? router.back() : router.replace('/');
     } catch (e: any) {
       Alert.alert('Error', e.message);
     } finally {

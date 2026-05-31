@@ -6,12 +6,16 @@ import {
   TabTriggerSlotProps,
 } from 'expo-router/ui';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, useWindowDimensions, View, StyleSheet } from 'react-native';
+import { Pressable, useWindowDimensions, View, StyleSheet, Text } from 'react-native';
 
 import { ThemedText } from './themed-text';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppTheme } from '@/context/app-theme';
+import { useAdmin } from '@/hooks/use-admin';
+import { useAuth } from '@/hooks/use-auth';
+import { usePendingCount } from '@/hooks/use-pending-count';
+import { router } from 'expo-router';
 
 const BOTTOM_BAR_HEIGHT = 64;
 const TOP_BAR_HEIGHT = 56;
@@ -65,6 +69,9 @@ export default function AppTabs() {
 function TopBar({ children, ...props }: any) {
   const theme = useTheme();
   const { resolved, toggle } = useAppTheme();
+  const { isAdmin } = useAdmin();
+  const { user } = useAuth();
+  const pendingCount = usePendingCount();
   return (
     <View
       {...props}
@@ -77,6 +84,35 @@ function TopBar({ children, ...props }: any) {
           LocalMart
         </ThemedText>
         <View style={styles.topTabs}>{children}</View>
+        {isAdmin && (
+          <Pressable
+            onPress={() => router.push('/admin')}
+            style={[styles.themeToggle, { backgroundColor: theme.backgroundElement }]}>
+            <View style={styles.badgeWrap}>
+              <Ionicons name="shield-checkmark-outline" size={17} color={theme.brand} />
+              {pendingCount > 0 && (
+                <View style={styles.badge}>
+                  <ThemedText style={styles.badgeText}>
+                    {pendingCount > 99 ? '99+' : pendingCount}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+          </Pressable>
+        )}
+        {user ? (
+          <Pressable
+            onPress={() => router.push('/settings')}
+            style={[styles.themeToggle, { backgroundColor: theme.backgroundElement }]}>
+            <Ionicons name="person-circle-outline" size={17} color={theme.textSecondary} />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() => router.push('/auth/login')}
+            style={[styles.signInBtn, { backgroundColor: theme.brand }]}>
+            <ThemedText style={styles.signInText}>Sign In</ThemedText>
+          </Pressable>
+        )}
         <Pressable
           onPress={toggle}
           style={[styles.themeToggle, { backgroundColor: theme.backgroundElement }]}>
@@ -233,5 +269,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: Spacing.one,
+  },
+  signInBtn: {
+    borderRadius: 20,
+    paddingHorizontal: Spacing.two,
+    paddingVertical: 6,
+    marginLeft: Spacing.one,
+  },
+  signInText: { fontSize: 13, fontWeight: '700', color: '#fff' },
+  badgeWrap: { position: 'relative' },
+  badge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    minWidth: 15,
+    height: 15,
+    borderRadius: 8,
+    backgroundColor: '#EF4444',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  badgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#fff',
+    lineHeight: 11,
   },
 });
