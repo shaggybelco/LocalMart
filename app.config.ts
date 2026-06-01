@@ -31,7 +31,8 @@ export default {
     // Web configuration
     web: {
       favicon: "./assets/favicon.png",
-      bundler: "metro"
+      bundler: "metro",
+      output: "static"
     },
     
     // Environment variables exposed to app

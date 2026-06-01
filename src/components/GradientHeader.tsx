@@ -8,9 +8,11 @@ interface Props {
   title: string;
   subtitle?: string;
   right?: React.ReactNode;
+  /** Optional content rendered below the title row, still inside the gradient */
+  children?: React.ReactNode;
 }
 
-export function GradientHeader({ title, subtitle, right }: Props) {
+export function GradientHeader({ title, subtitle, right, children }: Props) {
   const insets = useSafeAreaInsets();
   return (
     <GradientView style={[s.outer, { paddingTop: insets.top + Spacing.two }]}>
@@ -21,6 +23,7 @@ export function GradientHeader({ title, subtitle, right }: Props) {
         </View>
         {right ? <View style={s.rightSlot}>{right}</View> : null}
       </View>
+      {children ?? null}
     </GradientView>
   );
 }
@@ -32,7 +35,7 @@ const s = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.three,
     paddingTop: Spacing.two,
     flexDirection: 'row',
     alignItems: 'flex-start',

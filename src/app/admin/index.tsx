@@ -8,12 +8,12 @@ import {
   StyleSheet,
   TextInput,
   View,
+  Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { GradientView } from '@/components/GradientView';
 import { GradientHeader } from '@/components/GradientHeader';
 import { Spacing, MaxContentWidth } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -134,27 +134,28 @@ export default function AdminScreen() {
           <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/')} style={s.backBtn}>
             <Ionicons name="close" size={20} color="#fff" />
           </Pressable>
-        }
-      />
-
-      {/* Tab bar */}
-      <GradientView style={s.tabsOuter}>
-        <View style={s.tabs}>
-          {TABS.map(t => (
-            <Pressable key={t.id} onPress={() => setTab(t.id)} style={[s.tabItem, tab === t.id && s.tabActive]}>
-              <Ionicons name={t.icon} size={15} color={tab === t.id ? '#fff' : 'rgba(255,255,255,0.6)'} />
-              <ThemedText style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>
-                {t.label}
-              </ThemedText>
-              {!!t.badge && t.badge > 0 && (
-                <View style={s.tabBadge}>
-                  <ThemedText style={s.tabBadgeText}>{t.badge}</ThemedText>
-                </View>
-              )}
-            </Pressable>
-          ))}
+        }>
+        <View style={s.tabsRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.tabs}>
+            {TABS.map(t => (
+              <Pressable key={t.id} onPress={() => setTab(t.id)} style={[s.tabItem, tab === t.id && s.tabActive]}>
+                <Ionicons name={t.icon} size={15} color={tab === t.id ? '#fff' : 'rgba(255,255,255,0.6)'} />
+                <ThemedText style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>
+                  {t.label}
+                </ThemedText>
+                {!!t.badge && t.badge > 0 && (
+                  <View style={s.tabBadge}>
+                    <ThemedText style={s.tabBadgeText}>{t.badge}</ThemedText>
+                  </View>
+                )}
+              </Pressable>
+            ))}
+          </ScrollView>
         </View>
-      </GradientView>
+      </GradientHeader>
 
       {loading ? (
         <View style={s.centered}><ActivityIndicator color={theme.brand} /></View>
@@ -483,20 +484,21 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center', justifyContent: 'center',
   },
-  tabsOuter: { width: '100%' },
-  tabs: {
-    flexDirection: 'row',
+  tabsRow: {
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
     width: '100%',
+  },
+  tabs: {
+    flexDirection: 'row',
     paddingHorizontal: Spacing.three,
     paddingBottom: Spacing.two,
-    paddingTop: Spacing.two,
     gap: Spacing.one,
   },
   tabItem: {
-    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 5, paddingVertical: 7, borderRadius: 8,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 5, paddingVertical: 7, paddingHorizontal: Spacing.two,
+    borderRadius: 8, minWidth: 90,
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
   tabActive: { backgroundColor: 'rgba(255,255,255,0.25)' },

@@ -10,10 +10,9 @@ export function useAdmin() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { setIsAdmin(false); setLoading(false); return; }
-    checkIsAdmin().then(result => {
-      setIsAdmin(result);
-      setLoading(false);
-    });
+    checkIsAdmin()
+      .then(result => { setIsAdmin(result); setLoading(false); })
+      .catch(() => { setIsAdmin(false); setLoading(false); });
   }, [user, authLoading]);
 
   return { isAdmin, loading };
