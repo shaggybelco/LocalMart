@@ -14,9 +14,14 @@ const ExpoSecureStoreAdapter = {
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
+// Guard: localStorage is undefined during Expo's SSR static export (Node.js env)
+const webStorage = Platform.OS === 'web' && typeof localStorage !== 'undefined'
+  ? localStorage
+  : undefined;
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: Platform.OS === 'web' ? localStorage : ExpoSecureStoreAdapter,
+    storage: Platform.OS === 'web' ? webStorage : ExpoSecureStoreAdapter,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
