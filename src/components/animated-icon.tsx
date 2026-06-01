@@ -4,11 +4,15 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
 const DURATION = 600;
 
 export function AnimatedSplashOverlay() {
   const [visible, setVisible] = useState(true);
+
+  // Computed here so Dimensions.get isn't called at module load during SSR
+  const INITIAL_SCALE_FACTOR = typeof window !== 'undefined'
+    ? Dimensions.get('screen').height / 90
+    : 10;
 
   if (!visible) return null;
 
@@ -44,9 +48,10 @@ export function AnimatedSplashOverlay() {
   );
 }
 
+const scaleFactor = typeof window !== 'undefined' ? Dimensions.get('screen').height / 90 : 10;
 const keyframe = new Keyframe({
   0: {
-    transform: [{ scale: INITIAL_SCALE_FACTOR }],
+    transform: [{ scale: scaleFactor }],
   },
   100: {
     transform: [{ scale: 1 }],

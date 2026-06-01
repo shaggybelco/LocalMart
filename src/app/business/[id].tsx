@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
+
   Linking,
   Modal,
   Pressable,
@@ -600,8 +600,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   lightboxImg: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.8,
+    width: '100%',
+    flex: 1,
   },
   lightboxCounter: {
     position: 'absolute',
