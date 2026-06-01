@@ -33,6 +33,8 @@ yarn-error.*
 .claude
 
 # local env files
+.env
+.env.*
 .env*.local
 env
 plans/
