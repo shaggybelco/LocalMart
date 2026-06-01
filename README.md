@@ -4,7 +4,7 @@
 
 LocalMart is a **cross-platform marketplace app** (iOS · Android · Web) built with Expo and Supabase that connects customers with nearby informal businesses — spaza shops, hair salons, car washes, food vendors, phone repair shops, tailors, mechanics and more — across South African townships and suburbs.
 
-**Live demo →** [localmart.vercel.app](https://localmart.vercel.app)
+**Live demo →** [local-mart-dusky.vercel.app]([https://localmart.vercel.app](https://local-mart-dusky.vercel.app))
 **Demo login →** Use the "Try the Demo" button on the sign-in screen (no setup required).
 
 ---
